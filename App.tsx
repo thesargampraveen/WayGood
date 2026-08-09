@@ -1,10 +1,13 @@
-import { View, Text } from 'react-native'
+import { View, Text, Button } from 'react-native'
 import React from 'react'
 
-const App = () => {
+const App = ({navigation}) => {
   return (
-    <View>
-      <Text>App</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Press me" onPress={() =>navigation.navigate(
+                'Data',
+               
+              )} />
     </View>
   )
 }

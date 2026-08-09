@@ -2,8 +2,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import App from '../../App';
 import HomeScreen from '../Screens/Homescreen';
 import DetailsScreen from '../Screens/Detailsscreen';
+import Datascreen from '../Screens/Datascreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -14,10 +16,8 @@ const AppNavigator = () => {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={HomeScreen}
-          options={{
-            title: 'Study Abroad Programs'
-          }}
+          component={App}
+          
         />
 
         <Stack.Screen
@@ -26,6 +26,10 @@ const AppNavigator = () => {
           options={{
             title: 'University Details'
           }}
+        />
+        <Stack.Screen
+        name ="Data"
+        component ={Datascreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
