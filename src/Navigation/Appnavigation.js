@@ -2,38 +2,44 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import App from '../../App';
-import HomeScreen from '../Screens/Homescreen';
-import DetailsScreen from '../Screens/Detailsscreen';
-import Datascreen from '../Screens/Datascreen';
-
+import { useAuth } from '../context/AuthContext';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import HomeScreen from '../screens/HomeScreen';
+import LessonListScreen from '../screens/LessonListScreen';
+import LessonScreen from '../screens/LessonScreen';
+import QuizScreen from '../screens/QuizScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigator = () => {
+const AppNavigation = () => {
+  const { user } = useAuth();
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={App}
-          
-        />
-
-        <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
-          options={{
-            title: 'University Details'
-          }}
-        />
-        <Stack.Screen
-        name ="Data"
-        component ={Datascreen}
-        />
+      <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+        {user ? (
+          <>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Lessons" component={LessonListScreen} />
+            <Stack.Screen name="Lesson" component={LessonScreen} />
+            <Stack.Screen name="Quiz" component={QuizScreen} />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ animation: 'slide_from_bottom' }}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-export default AppNavigator;
+export default AppNavigation;
