@@ -18,6 +18,7 @@ const QuizScreen = ({ navigation, route }) => {
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
+  const [wrong, setWrong] = useState([]);
   const [finished, setFinished] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -53,7 +54,14 @@ const QuizScreen = ({ navigation, route }) => {
   const pick = (option) => {
     if (selected !== null) return; // already answered
     setSelected(option);
-    if (option === question.answer) setScore(score + 1);
+    if (option === question.answer) {
+      setScore(score + 1);
+    } else {
+      setWrong([
+        ...wrong,
+        { term: question.term, translit: question.translit, answer: question.answer, picked: option },
+      ]);
+    }
   };
 
   const next = () => {
@@ -69,6 +77,7 @@ const QuizScreen = ({ navigation, route }) => {
     setIdx(0);
     setSelected(null);
     setScore(0);
+    setWrong([]);
     setFinished(false);
     setSaving(false);
     api
@@ -83,27 +92,68 @@ const QuizScreen = ({ navigation, route }) => {
     const emoji = pct >= 80 ? '🏆' : pct >= 50 ? '💪' : '📚';
     const message =
       pct >= 80 ? 'Amazing work!' : pct >= 50 ? 'Good try, keep going!' : 'Practice makes perfect!';
+    const tip =
+      pct >= 80
+        ? 'Almost perfect! Just revisit the words you missed and this lesson is yours. 🌟'
+        : pct >= 50
+          ? 'Good effort! Read the mistakes below once more, then try the quiz again. 📖'
+          : 'No worries! Replay the lesson flashcards first, then come back to this quiz. 💪';
 
     return (
-      <SafeAreaView style={[styles.safe, styles.center]}>
-        <View style={[styles.resultCard, CARD_SHADOW]}>
-          <Text style={styles.resultEmoji}>{emoji}</Text>
-          <Text style={[styles.resultScore, { color: language.color }]}>
-            {score}/{total}
-          </Text>
-          <Text style={styles.resultMessage}>{message}</Text>
-          <TouchableOpacity style={[styles.resultBtn, { backgroundColor: language.color }]} onPress={retry}>
-            <Text style={styles.resultBtnText}>🔄 Retry Quiz</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.resultBtnOutline}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={[styles.resultBtnOutlineText, { color: language.color }]}>
-              Back to Lessons
+      <SafeAreaView style={styles.safe}>
+        <ScrollView contentContainerStyle={styles.resultWrap} showsVerticalScrollIndicator={false}>
+          <View style={[styles.resultCard, CARD_SHADOW]}>
+            <Text style={styles.resultEmoji}>{emoji}</Text>
+            <Text style={[styles.resultScore, { color: language.color }]}>
+              {score}/{total}
             </Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.resultMessage}>{message}</Text>
+
+            {/* How to improve */}
+            <View style={[styles.tipBox, { backgroundColor: language.lightColor }]}>
+              <Text style={[styles.tipTitle, { color: language.color }]}>💡 How to improve</Text>
+              <Text style={styles.tipText}>{tip}</Text>
+            </View>
+
+            {/* What went wrong */}
+            {wrong.length > 0 && (
+              <View style={styles.mistakesWrap}>
+                <Text style={styles.mistakesTitle}>❌ What went wrong ({wrong.length})</Text>
+                {wrong.map((w, i) => (
+                  <View key={i} style={styles.mistakeItem}>
+                    <Text style={styles.mistakeTerm}>
+                      {w.term}{' '}
+                      <Text style={styles.mistakeTranslit}>({w.translit})</Text>
+                    </Text>
+                    <Text style={styles.mistakeCorrect}>✓ Correct answer: {w.answer}</Text>
+                    <Text style={styles.mistakePicked}>✕ You picked: {w.picked}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={[styles.resultBtn, { backgroundColor: language.color }]}
+              onPress={retry}
+            >
+              <Text style={styles.resultBtnText}>🔄 Try Again</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.resultBtn, { backgroundColor: language.color }]}
+              onPress={() => navigation.replace('Lesson', { lessonId, language })}
+            >
+              <Text style={styles.resultBtnText}>📖 Review Lesson</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.resultBtnOutline}
+              onPress={() => navigation.goBack()}
+            >
+              <Text style={[styles.resultBtnOutlineText, { color: language.color }]}>
+                Back to Lessons
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -289,6 +339,25 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
   },
   resultBtnOutlineText: { fontWeight: 'bold', fontSize: 15 },
+  resultWrap: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  tipBox: { borderRadius: 16, padding: 14, marginTop: 18, alignSelf: 'stretch' },
+  tipTitle: { fontSize: 13, fontWeight: 'bold' },
+  tipText: { fontSize: 13, color: COLORS.text, marginTop: 4 },
+  mistakesWrap: { alignSelf: 'stretch', marginTop: 18 },
+  mistakesTitle: { fontSize: 14, fontWeight: 'bold', color: COLORS.text, marginBottom: 8 },
+  mistakeItem: {
+    alignSelf: 'stretch',
+    backgroundColor: COLORS.bg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 14,
+    padding: 12,
+    marginBottom: 8,
+  },
+  mistakeTerm: { fontSize: 20, fontWeight: 'bold', color: COLORS.text },
+  mistakeTranslit: { fontSize: 12, fontWeight: 'normal', color: COLORS.subtext },
+  mistakeCorrect: { fontSize: 13, color: COLORS.success, fontWeight: '600', marginTop: 4 },
+  mistakePicked: { fontSize: 13, color: COLORS.danger, fontWeight: '600', marginTop: 2 },
 });
 
 export default QuizScreen;

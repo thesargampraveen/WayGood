@@ -19,6 +19,7 @@ const LessonScreen = ({ navigation, route }) => {
   const [idx, setIdx] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [finishing, setFinishing] = useState(false);
+  const [showComplete, setShowComplete] = useState(false);
 
   const load = useCallback(async () => {
     const [lessonRes, progressRes] = await Promise.all([
@@ -51,23 +52,58 @@ const LessonScreen = ({ navigation, route }) => {
   const isLast = idx === lesson.items.length - 1;
 
   const markComplete = async () => {
+    if (isDone) {
+      setShowComplete(true); // already saved — just show the celebration again
+      return;
+    }
     setFinishing(true);
     try {
       await api.post(`/api/progress/lessons/${lessonId}/complete`);
       setIsDone(true);
-      Alert.alert('Great job! 🎉', 'Lesson completed. Ready to test yourself?', [
-        { text: 'Back to lessons', style: 'cancel', onPress: () => navigation.goBack() },
-        {
-          text: 'Take the quiz 🎯',
-          onPress: () => navigation.replace('Quiz', { lessonId, language }),
-        },
-      ]);
+      setShowComplete(true);
     } catch {
       Alert.alert('Oops', 'Could not save your progress');
     } finally {
       setFinishing(false);
     }
   };
+
+  const tryAgain = () => {
+    setIdx(0);
+    setShowComplete(false);
+  };
+
+  /* ---------------- Completion screen ---------------- */
+  if (showComplete && lesson) {
+    return (
+      <SafeAreaView style={[styles.safe, styles.center]}>
+        <View style={[styles.resultCard, CARD_SHADOW]}>
+          <Text style={styles.resultEmoji}>🎉</Text>
+          <Text style={[styles.resultTitle, { color: language.color }]}>Lesson Complete!</Text>
+          <Text style={styles.resultMessage}>
+            You learned all {lesson.items.length} words in {language.name}. Great job!
+          </Text>
+          <TouchableOpacity
+            style={[styles.resultBtn, { backgroundColor: language.color }]}
+            onPress={tryAgain}
+          >
+            <Text style={styles.resultBtnText}>🔄 Try Again</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.resultBtn, { backgroundColor: language.color }]}
+            onPress={() => navigation.replace('Quiz', { lessonId, language })}
+          >
+            <Text style={styles.resultBtnText}>🎯 Take the Quiz</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.resultBtnOutline} onPress={() => navigation.goBack()}>
+            <Text style={[styles.resultBtnOutlineText, { color: language.color }]}>
+              Back to Lessons
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -132,7 +168,7 @@ const LessonScreen = ({ navigation, route }) => {
               { backgroundColor: isDone ? COLORS.success : language.color, flex: 1 },
             ]}
             onPress={markComplete}
-            disabled={finishing || isDone}
+            disabled={finishing}
           >
             <Text style={styles.primaryBtnText}>
               {isDone ? 'Completed ✓' : finishing ? 'Saving…' : 'Complete Lesson ✓'}
@@ -254,6 +290,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryBtnText: { color: '#FFF', fontWeight: 'bold', fontSize: 16 },
+  resultCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: 26,
+    padding: 30,
+    alignItems: 'center',
+    width: '100%',
+  },
+  resultEmoji: { fontSize: 64 },
+  resultTitle: { fontSize: 26, fontWeight: 'bold', marginTop: 10 },
+  resultMessage: { fontSize: 15, color: COLORS.subtext, marginTop: 6, textAlign: 'center' },
+  resultBtn: {
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    marginTop: 14,
+  },
+  resultBtnText: { color: '#FFF', fontWeight: 'bold', fontSize: 15 },
+  resultBtnOutline: {
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: COLORS.border,
+  },
+  resultBtnOutlineText: { fontWeight: 'bold', fontSize: 15 },
 });
 
 export default LessonScreen;
