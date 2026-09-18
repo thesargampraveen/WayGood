@@ -9,6 +9,8 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import api from '../api/client';
 import { COLORS, CARD_SHADOW } from '../theme';
@@ -78,7 +80,7 @@ const LessonScreen = ({ navigation, route }) => {
     return (
       <SafeAreaView style={[styles.safe, styles.center]}>
         <View style={[styles.resultCard, CARD_SHADOW]}>
-          <Text style={styles.resultEmoji}>🎉</Text>
+          <MaterialCommunityIcons name="party-popper" size={64} color={language.color} />
           <Text style={[styles.resultTitle, { color: language.color }]}>Lesson Complete!</Text>
           <Text style={styles.resultMessage}>
             You learned all {lesson.items.length} words in {language.name}. Great job!
@@ -87,13 +89,17 @@ const LessonScreen = ({ navigation, route }) => {
             style={[styles.resultBtn, { backgroundColor: language.color }]}
             onPress={tryAgain}
           >
-            <Text style={styles.resultBtnText}>🔄 Try Again</Text>
+            <Text style={styles.resultBtnText}>
+              <Ionicons name="refresh" size={15} color="#FFF" /> Try Again
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.resultBtn, { backgroundColor: language.color }]}
             onPress={() => navigation.replace('Quiz', { lessonId, language })}
           >
-            <Text style={styles.resultBtnText}>🎯 Take the Quiz</Text>
+            <Text style={styles.resultBtnText}>
+              <MaterialCommunityIcons name="target" size={15} color="#FFF" /> Take the Quiz
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.resultBtnOutline} onPress={() => navigation.goBack()}>
             <Text style={[styles.resultBtnOutlineText, { color: language.color }]}>
@@ -110,7 +116,7 @@ const LessonScreen = ({ navigation, route }) => {
       {/* Top bar */}
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.iconBtnText}>←</Text>
+          <Ionicons name="chevron-back" size={22} color={COLORS.text} />
         </TouchableOpacity>
         <View style={styles.dotsWrap}>
           {lesson.items.map((_, i) => (
@@ -134,14 +140,17 @@ const LessonScreen = ({ navigation, route }) => {
         {/* Flashcard */}
         <View style={[styles.card, CARD_SHADOW]}>
           <View style={[styles.categoryChip, { backgroundColor: language.lightColor }]}>
-            <Text style={[styles.categoryText, { color: language.color }]}>
-              {language.emoji} {language.name}
-            </Text>
+            <View style={styles.categoryChipInner}>
+              <MaterialCommunityIcons name={language.icon} size={14} color={language.color} />
+              <Text style={[styles.categoryText, { color: language.color }]}>{language.name}</Text>
+            </View>
           </View>
 
           <Text style={styles.term}>{item.term}</Text>
           <View style={styles.translitPill}>
-            <Text style={styles.translitText}>🗣 {item.translit}</Text>
+            <Text style={styles.translitText}>
+              <Ionicons name="volume-high" size={15} color={COLORS.primaryDark} /> {item.translit}
+            </Text>
           </View>
 
           <Text style={styles.meaning}>{item.meaning}</Text>
@@ -158,7 +167,9 @@ const LessonScreen = ({ navigation, route }) => {
       <View style={styles.actions}>
         {idx > 0 && (
           <TouchableOpacity style={styles.navBtn} onPress={() => setIdx(idx - 1)}>
-            <Text style={styles.navBtnText}>← Prev</Text>
+            <Text style={styles.navBtnText}>
+              <Ionicons name="chevron-back" size={15} color={COLORS.text} /> Prev
+            </Text>
           </TouchableOpacity>
         )}
         {isLast ? (
@@ -171,7 +182,8 @@ const LessonScreen = ({ navigation, route }) => {
             disabled={finishing}
           >
             <Text style={styles.primaryBtnText}>
-              {isDone ? 'Completed ✓' : finishing ? 'Saving…' : 'Complete Lesson ✓'}
+              {isDone ? 'Completed ' : finishing ? 'Saving…' : 'Complete Lesson '}
+              {!finishing && <Ionicons name="checkmark" size={16} color="#FFF" />}
             </Text>
           </TouchableOpacity>
         ) : (
@@ -179,7 +191,9 @@ const LessonScreen = ({ navigation, route }) => {
             style={[styles.primaryBtn, { backgroundColor: language.color, flex: 1 }]}
             onPress={() => setIdx(idx + 1)}
           >
-            <Text style={styles.primaryBtnText}>Next →</Text>
+            <Text style={styles.primaryBtnText}>
+              Next <Ionicons name="chevron-forward" size={16} color="#FFF" />
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -204,7 +218,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconBtnText: { fontSize: 20, fontWeight: 'bold', color: COLORS.text },
   dotsWrap: {
     flex: 1,
     flexDirection: 'row',
@@ -240,6 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
   },
+  categoryChipInner: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   categoryText: { fontSize: 12, fontWeight: 'bold' },
   term: {
     fontSize: 58,
@@ -297,7 +311,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  resultEmoji: { fontSize: 64 },
   resultTitle: { fontSize: 26, fontWeight: 'bold', marginTop: 10 },
   resultMessage: { fontSize: 15, color: COLORS.subtext, marginTop: 6, textAlign: 'center' },
   resultBtn: {

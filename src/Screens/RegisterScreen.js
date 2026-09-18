@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext';
 import { COLORS, CARD_SHADOW } from '../theme';
 
@@ -50,7 +51,9 @@ const RegisterScreen = ({ navigation }) => {
       >
         <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
-            <Text style={styles.title}>Create account ✨</Text>
+            <Text style={styles.title}>
+              Create account <Ionicons name="sparkles" size={22} color={COLORS.primary} />
+            </Text>
             <Text style={styles.subtitle}>Start your language journey today</Text>
           </View>
 

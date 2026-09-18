@@ -7,7 +7,7 @@ const LANGUAGES = [
     nativeName: 'हिन्दी',
     script: 'Devanagari',
     description: 'The most widely spoken language of India',
-    emoji: '🪔',
+    icon: 'candle', // MaterialCommunityIcons
     color: '#F59E0B',
     lightColor: '#FEF3C7',
   },
@@ -17,7 +17,7 @@ const LANGUAGES = [
     nativeName: 'मराठी',
     script: 'Devanagari',
     description: 'The sweet language of Maharashtra',
-    emoji: '🛕',
+    icon: 'castle', // MaterialCommunityIcons
     color: '#10B981',
     lightColor: '#D1FAE5',
   },
@@ -27,7 +27,7 @@ const LANGUAGES = [
     nativeName: 'English',
     script: 'Latin',
     description: 'The global language of opportunity',
-    emoji: '📘',
+    icon: 'book-open-variant', // MaterialCommunityIcons
     color: '#3B82F6',
     lightColor: '#DBEAFE',
   },

@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import api from '../api/client';
 import { COLORS, CARD_SHADOW } from '../theme';
@@ -89,21 +91,21 @@ const QuizScreen = ({ navigation, route }) => {
   /* ---------------- Result screen ---------------- */
   if (finished) {
     const pct = Math.round((score / total) * 100);
-    const emoji = pct >= 80 ? '🏆' : pct >= 50 ? '💪' : '📚';
+    const resultIcon = pct >= 80 ? 'trophy' : pct >= 50 ? 'trending-up' : 'book';
     const message =
       pct >= 80 ? 'Amazing work!' : pct >= 50 ? 'Good try, keep going!' : 'Practice makes perfect!';
     const tip =
       pct >= 80
-        ? 'Almost perfect! Just revisit the words you missed and this lesson is yours. 🌟'
+        ? 'Almost perfect! Just revisit the words you missed and this lesson is yours.'
         : pct >= 50
-          ? 'Good effort! Read the mistakes below once more, then try the quiz again. 📖'
-          : 'No worries! Replay the lesson flashcards first, then come back to this quiz. 💪';
+          ? 'Good effort! Read the mistakes below once more, then try the quiz again.'
+          : 'No worries! Replay the lesson flashcards first, then come back to this quiz.';
 
     return (
       <SafeAreaView style={styles.safe}>
         <ScrollView contentContainerStyle={styles.resultWrap} showsVerticalScrollIndicator={false}>
           <View style={[styles.resultCard, CARD_SHADOW]}>
-            <Text style={styles.resultEmoji}>{emoji}</Text>
+            <Ionicons name={resultIcon} size={64} color={language.color} />
             <Text style={[styles.resultScore, { color: language.color }]}>
               {score}/{total}
             </Text>
@@ -111,22 +113,32 @@ const QuizScreen = ({ navigation, route }) => {
 
             {/* How to improve */}
             <View style={[styles.tipBox, { backgroundColor: language.lightColor }]}>
-              <Text style={[styles.tipTitle, { color: language.color }]}>💡 How to improve</Text>
+              <Text style={[styles.tipTitle, { color: language.color }]}>
+                <Ionicons name="bulb" size={13} color={language.color} /> How to improve
+              </Text>
               <Text style={styles.tipText}>{tip}</Text>
             </View>
 
             {/* What went wrong */}
             {wrong.length > 0 && (
               <View style={styles.mistakesWrap}>
-                <Text style={styles.mistakesTitle}>❌ What went wrong ({wrong.length})</Text>
+                <Text style={styles.mistakesTitle}>
+                  <Ionicons name="close-circle" size={14} color={COLORS.danger} /> What went wrong (
+                  {wrong.length})
+                </Text>
                 {wrong.map((w, i) => (
                   <View key={i} style={styles.mistakeItem}>
                     <Text style={styles.mistakeTerm}>
                       {w.term}{' '}
                       <Text style={styles.mistakeTranslit}>({w.translit})</Text>
                     </Text>
-                    <Text style={styles.mistakeCorrect}>✓ Correct answer: {w.answer}</Text>
-                    <Text style={styles.mistakePicked}>✕ You picked: {w.picked}</Text>
+                    <Text style={styles.mistakeCorrect}>
+                      <Ionicons name="checkmark" size={13} color={COLORS.success} /> Correct answer:{' '}
+                      {w.answer}
+                    </Text>
+                    <Text style={styles.mistakePicked}>
+                      <Ionicons name="close" size={13} color={COLORS.danger} /> You picked: {w.picked}
+                    </Text>
                   </View>
                 ))}
               </View>
@@ -136,13 +148,17 @@ const QuizScreen = ({ navigation, route }) => {
               style={[styles.resultBtn, { backgroundColor: language.color }]}
               onPress={retry}
             >
-              <Text style={styles.resultBtnText}>🔄 Try Again</Text>
+              <Text style={styles.resultBtnText}>
+                <Ionicons name="refresh" size={15} color="#FFF" /> Try Again
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.resultBtn, { backgroundColor: language.color }]}
               onPress={() => navigation.replace('Lesson', { lessonId, language })}
             >
-              <Text style={styles.resultBtnText}>📖 Review Lesson</Text>
+              <Text style={styles.resultBtnText}>
+                <Ionicons name="book" size={15} color="#FFF" /> Review Lesson
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.resultBtnOutline}
@@ -166,7 +182,7 @@ const QuizScreen = ({ navigation, route }) => {
       {/* Progress header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.iconBtnText}>✕</Text>
+          <Ionicons name="close" size={22} color={COLORS.text} />
         </TouchableOpacity>
         <View style={styles.trackWrap}>
           <View style={styles.progressTrack}>
@@ -211,8 +227,12 @@ const QuizScreen = ({ navigation, route }) => {
             >
               <Text style={styles.optionLabel}>{String.fromCharCode(65 + i)}</Text>
               <Text style={styles.optionText}>{option}</Text>
-              {selected !== null && isAnswer && <Text style={styles.optionMark}>✓</Text>}
-              {isSelected && !isAnswer && <Text style={styles.optionMark}>✕</Text>}
+              {selected !== null && isAnswer && (
+                <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
+              )}
+              {isSelected && !isAnswer && (
+                <Ionicons name="close-circle" size={20} color={COLORS.danger} />
+              )}
             </TouchableOpacity>
           );
         })}
@@ -223,7 +243,15 @@ const QuizScreen = ({ navigation, route }) => {
             onPress={next}
           >
             <Text style={styles.nextBtnText}>
-              {idx + 1 === total ? 'See Results 🎉' : 'Next Question →'}
+              {idx + 1 === total ? (
+                <>
+                  See Results <MaterialCommunityIcons name="party-popper" size={16} color="#FFF" />
+                </>
+              ) : (
+                <>
+                  Next Question <Ionicons name="chevron-forward" size={16} color="#FFF" />
+                </>
+              )}
             </Text>
           </TouchableOpacity>
         )}
@@ -251,7 +279,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconBtnText: { fontSize: 17, fontWeight: 'bold', color: COLORS.text },
   trackWrap: { flex: 1 },
   progressTrack: {
     height: 10,
@@ -300,7 +327,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   optionText: { flex: 1, fontSize: 15, color: COLORS.text, fontWeight: '600' },
-  optionMark: { fontSize: 16, fontWeight: 'bold', color: COLORS.text },
   nextBtn: {
     borderRadius: 16,
     paddingVertical: 15,
@@ -316,7 +342,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  resultEmoji: { fontSize: 64 },
   resultScore: { fontSize: 42, fontWeight: 'bold', marginTop: 10 },
   resultMessage: { fontSize: 15, color: COLORS.subtext, marginTop: 6 },
   resultBtn: {

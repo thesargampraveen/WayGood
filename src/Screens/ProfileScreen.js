@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
@@ -62,7 +64,7 @@ const ProfileScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safe}>
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.iconBtnText}>←</Text>
+          <Ionicons name="chevron-back" size={22} color={COLORS.text} />
         </TouchableOpacity>
         <Text style={styles.title}>My Profile</Text>
         <View style={{ width: 40 }} />
@@ -107,7 +109,7 @@ const ProfileScreen = ({ navigation }) => {
               <View key={lang.code} style={[styles.langCard, CARD_SHADOW]}>
                 <View style={styles.langRow}>
                   <View style={[styles.langBadge, { backgroundColor: lang.lightColor }]}>
-                    <Text style={{ fontSize: 20 }}>{lang.emoji}</Text>
+                    <MaterialCommunityIcons name={lang.icon} size={22} color={lang.color} />
                   </View>
                   <Text style={styles.langName}>{lang.name}</Text>
                   <Text style={[styles.langPct, { color: lang.color }]}>{pct}%</Text>
@@ -153,7 +155,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconBtnText: { fontSize: 20, fontWeight: 'bold', color: COLORS.text },
   title: { fontSize: 18, fontWeight: 'bold', color: COLORS.text },
   userCard: {
     backgroundColor: COLORS.card,

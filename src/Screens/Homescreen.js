@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
@@ -79,7 +81,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <View style={styles.cardTop}>
           <View style={[styles.emojiBadge, { backgroundColor: item.lightColor }]}>
-            <Text style={styles.emoji}>{item.emoji}</Text>
+            <MaterialCommunityIcons name={item.icon} size={28} color={item.color} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.nativeName}>{item.nativeName}</Text>
@@ -109,7 +111,10 @@ const HomeScreen = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.hello}>Namaste, {user?.name?.split(' ')[0]} 👋</Text>
+          <Text style={styles.hello}>
+            Namaste, {user?.name?.split(' ')[0]}{' '}
+            <MaterialCommunityIcons name="hand-wave" size={22} color={COLORS.primary} />
+          </Text>
           <Text style={styles.question}>What will you learn today?</Text>
         </View>
         <TouchableOpacity
@@ -204,7 +209,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emoji: { fontSize: 28 },
   nativeName: { fontSize: 21, fontWeight: 'bold', color: COLORS.text },
   langDesc: { fontSize: 12, color: COLORS.subtext, marginTop: 2 },
   pct: { fontSize: 18, fontWeight: 'bold' },

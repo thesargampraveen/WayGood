@@ -9,14 +9,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import api from '../api/client';
 import { COLORS, CARD_SHADOW } from '../theme';
 
 const CATEGORY_META = {
-  alphabet: { label: 'Letters', emoji: '🔤' },
-  words: { label: 'Words', emoji: '💬' },
-  phrases: { label: 'Phrases', emoji: '📝' },
+  alphabet: { label: 'Letters', icon: 'text' },
+  words: { label: 'Words', icon: 'chatbubbles' },
+  phrases: { label: 'Phrases', icon: 'document-text' },
 };
 
 const LessonListScreen = ({ navigation, route }) => {
@@ -61,24 +63,32 @@ const LessonListScreen = ({ navigation, route }) => {
               { backgroundColor: isDone ? COLORS.successLight : language.lightColor },
             ]}
           >
-            <Text style={[styles.indexText, { color: isDone ? COLORS.success : language.color }]}>
-              {isDone ? '✓' : index + 1}
-            </Text>
+            {isDone ? (
+              <Ionicons name="checkmark" size={22} color={COLORS.success} />
+            ) : (
+              <Text style={[styles.indexText, { color: language.color }]}>{index + 1}</Text>
+            )}
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.lessonTitle}>{item.title}</Text>
-            <Text style={styles.lessonMeta}>
-              {cat.emoji} {cat.label} • {item.itemCount} items
-            </Text>
+            <View style={styles.metaRow}>
+              <Ionicons name={cat.icon} size={12} color={COLORS.subtext} />
+              <Text style={styles.lessonMeta}>
+                {cat.label} • {item.itemCount} items
+              </Text>
+            </View>
           </View>
-          <Text style={styles.arrow}>›</Text>
+          <Ionicons name="chevron-forward" size={24} color={COLORS.subtext} />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.quizBtn, { backgroundColor: language.lightColor }]}
           onPress={() => navigation.navigate('Quiz', { lessonId: item._id, language })}
         >
-          <Text style={styles.quizBtnText}>🎯 Quiz</Text>
+          <View style={styles.quizBtnInner}>
+            <MaterialCommunityIcons name="target" size={14} color={COLORS.text} />
+            <Text style={styles.quizBtnText}>Quiz</Text>
+          </View>
         </TouchableOpacity>
       </View>
     );
@@ -89,9 +99,9 @@ const LessonListScreen = ({ navigation, route }) => {
       {/* Colored header */}
       <View style={[styles.header, { backgroundColor: language.lightColor }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="chevron-back" size={26} color={COLORS.text} />
         </TouchableOpacity>
-        <Text style={styles.headerEmoji}>{language.emoji}</Text>
+        <MaterialCommunityIcons name={language.icon} size={34} color={language.color} />
         <Text style={[styles.headerTitle, { color: language.color }]}>{language.nativeName}</Text>
         <Text style={styles.headerSub}>
           {lessons ? `${doneCount} of ${lessons.length} lessons completed` : ' '}
@@ -125,8 +135,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 28,
   },
   backBtn: { position: 'absolute', left: 16, top: 14, padding: 6 },
-  backText: { fontSize: 26, color: COLORS.text, fontWeight: 'bold' },
-  headerEmoji: { fontSize: 34, textAlign: 'center' },
   headerTitle: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', marginTop: 4 },
   headerSub: { fontSize: 13, color: COLORS.subtext, textAlign: 'center', marginTop: 4 },
   loadingWrap: { flex: 1, justifyContent: 'center', alignItems: 'center' },
@@ -146,14 +154,15 @@ const styles = StyleSheet.create({
   },
   indexText: { fontSize: 18, fontWeight: 'bold' },
   lessonTitle: { fontSize: 16, fontWeight: 'bold', color: COLORS.text },
-  lessonMeta: { fontSize: 12, color: COLORS.subtext, marginTop: 3 },
-  arrow: { fontSize: 26, color: COLORS.subtext, marginRight: 4 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 3 },
+  lessonMeta: { fontSize: 12, color: COLORS.subtext },
   quizBtn: {
     marginTop: 12,
     borderRadius: 12,
     paddingVertical: 8,
     alignItems: 'center',
   },
+  quizBtnInner: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   quizBtnText: { fontSize: 13, fontWeight: 'bold', color: COLORS.text },
 });
 
