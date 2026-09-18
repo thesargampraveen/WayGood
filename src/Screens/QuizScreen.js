@@ -201,7 +201,7 @@ const QuizScreen = ({ navigation, route }) => {
 
         <View style={[styles.questionCard, CARD_SHADOW]}>
           <Text style={styles.term}>{question.term}</Text>
-          <Text style={styles.translit}>{question.translit}</Text>
+          {/* <Text style={styles.translit}>{question.translit}</Text> */}
         </View>
 
         {question.options.map((option, i) => {

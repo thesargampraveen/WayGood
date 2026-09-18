@@ -1,4 +1,4 @@
-// The 3 languages offered by the app (same data as backend/src/data/languages.js,
+// The 4 languages offered by the app (same data as backend/src/data/languages.js,
 // kept here so the home screen renders instantly even before the API responds)
 const LANGUAGES = [
   {
@@ -30,6 +30,16 @@ const LANGUAGES = [
     icon: 'book-open-variant', // MaterialCommunityIcons
     color: '#3B82F6',
     lightColor: '#DBEAFE',
+  },
+  {
+    code: 'te',
+    name: 'Telugu',
+    nativeName: 'తెలుగు',
+    script: 'Telugu',
+    description: 'The Italian of the East',
+    icon: 'flower-tulip', // MaterialCommunityIcons
+    color: '#8B5CF6',
+    lightColor: '#EDE9FE',
   },
 ];
 
