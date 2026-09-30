@@ -13,6 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import api from '../api/client';
 import { COLORS, CARD_SHADOW } from '../theme';
+import { speakWord } from '../utils/speech';
 
 const QuizScreen = ({ navigation, route }) => {
   const { lessonId, language } = route.params;
@@ -199,10 +200,17 @@ const QuizScreen = ({ navigation, route }) => {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.questionLabel}>What does this mean?</Text>
 
-        <View style={[styles.questionCard, CARD_SHADOW]}>
+        <TouchableOpacity
+          style={[styles.questionCard, CARD_SHADOW]}
+          activeOpacity={0.8}
+          onPress={() => speakWord(question.term, language.code)}
+        >
           <Text style={styles.term}>{question.term}</Text>
+          <View style={[styles.speakerHint, { backgroundColor: language.color }]}>
+            <Ionicons name="volume-high" size={16} color="#FFF" />
+          </View>
           {/* <Text style={styles.translit}>{question.translit}</Text> */}
-        </View>
+        </TouchableOpacity>
 
         {question.options.map((option, i) => {
           const isAnswer = option === question.answer;
@@ -304,6 +312,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   term: { fontSize: 36, fontWeight: 'bold', color: COLORS.text, textAlign: 'center' },
+  speakerHint: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
   translit: { fontSize: 14, color: COLORS.subtext, marginTop: 8 },
   optionBtn: {
     flexDirection: 'row',

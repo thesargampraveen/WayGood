@@ -14,6 +14,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import api from '../api/client';
 import { COLORS, CARD_SHADOW } from '../theme';
+import { speakWord } from '../utils/speech';
 
 const LessonScreen = ({ navigation, route }) => {
   const { lessonId, language } = route.params;
@@ -146,12 +147,25 @@ const LessonScreen = ({ navigation, route }) => {
             </View>
           </View>
 
-          <Text style={styles.term}>{item.term}</Text>
-          <View style={styles.translitPill}>
+          <TouchableOpacity
+            style={styles.termTap}
+            activeOpacity={0.7}
+            onPress={() => speakWord(item.term, language.code)}
+          >
+            <Text style={styles.term}>{item.term}</Text>
+            <View style={[styles.speakerHint, { backgroundColor: language.color }]}>
+              <Ionicons name="volume-high" size={18} color="#FFF" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.translitPill}
+            activeOpacity={0.7}
+            onPress={() => speakWord(item.term, language.code)}
+          >
             <Text style={styles.translitText}>
               <Ionicons name="volume-high" size={15} color={COLORS.primaryDark} /> {item.translit}
             </Text>
-          </View>
+          </TouchableOpacity>
 
           <Text style={styles.meaning}>{item.meaning}</Text>
 
@@ -260,8 +274,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.text,
     textAlign: 'center',
-    marginTop: 18,
     lineHeight: 68,
+  },
+  termTap: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 18 },
+  speakerHint: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   translitPill: {
     backgroundColor: COLORS.primaryLight,

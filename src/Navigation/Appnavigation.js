@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../context/AuthContext';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from "../screens/Homescreen"
 import LessonListScreen from '../screens/LessonListScreen';
 import LessonScreen from '../screens/LessonScreen';
 import QuizScreen from '../screens/QuizScreen';
