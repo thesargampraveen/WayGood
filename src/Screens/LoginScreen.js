@@ -7,8 +7,11 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native';
+import logo from '../Assets/logo.png';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { COLORS, CARD_SHADOW } from '../theme';
@@ -40,18 +43,21 @@ const LoginScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
         {/* Logo */}
         <View style={styles.logoWrap}>
-          <View style={styles.logo}>
-            <Text style={styles.logoText}>अ</Text>
-          </View>
-          <Text style={styles.appName}>Bhasha</Text>
-          <Text style={styles.tagline}>Learn Hindi • Marathi • English</Text>
+          <Image source={logo} style={styles.logo} resizeMode="contain" />
+         <Text style={styles.tagline}>Learn Hindi • Marathi • English</Text>
         </View>
 
-        {/* Form */}
+        
         <View style={[styles.card, CARD_SHADOW]}>
           {error !== '' && <Text style={styles.error}>{error}</Text>}
 
@@ -91,6 +97,7 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.switchLink}>Create an account</Text>
           </TouchableOpacity>
         </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -98,18 +105,15 @@ const LoginScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
-  container: { flex: 1, justifyContent: 'center', padding: 24 },
+  container: { flex: 1 },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 24 },
   logoWrap: { alignItems: 'center', marginBottom: 32 },
   logo: {
-    width: 88,
-    height: 88,
+    width: 500,
+    height: 200,
     borderRadius: 28,
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 14,
   },
-  logoText: { fontSize: 42, color: '#FFF', fontWeight: 'bold' },
   appName: { fontSize: 32, fontWeight: 'bold', color: COLORS.text },
   tagline: { fontSize: 14, color: COLORS.subtext, marginTop: 4 },
   card: {

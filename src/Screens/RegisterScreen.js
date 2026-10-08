@@ -47,9 +47,13 @@ const RegisterScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+        >
           <View style={styles.header}>
             <Text style={styles.title}>
               Create account <Ionicons name="sparkles" size={22} color={COLORS.primary} />
@@ -114,6 +118,7 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
   container: { flex: 1, padding: 24 },
+  scrollContent: { flexGrow: 1, justifyContent: 'center' },
   header: { marginTop: 28, marginBottom: 24 },
   title: { fontSize: 28, fontWeight: 'bold', color: COLORS.text },
   subtitle: { fontSize: 14, color: COLORS.subtext, marginTop: 4 },
